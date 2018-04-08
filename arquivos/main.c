@@ -4,13 +4,13 @@
 #include "pdi.h"
 
 #define GT2         "GT2.BMP"
-#define MASCARAGT2  "1GT2mascara.bmp"
-#define BORRADAGT2  "2GT2borrada.bmp"
-#define BLOOMGT2    "3GT2bloom.bmp"
+#define MASCARAGT2  "11GT2mascara.bmp"
+#define BORRADAGT2  "12GT2borrada.bmp"
+#define BLOOMGT2    "13GT2bloom.bmp"
 #define WW          "Wind Waker GC.bmp"
-#define MASCARAWW   "1WWmascara.bmp"
-#define BORRADAWW   "2WWborrada.bmp"
-#define BLOOMWW     "3WWbloom.bmp"
+#define MASCARAWW   "21WWmascara.bmp"
+#define BORRADAWW   "22WWborrada.bmp"
+#define BLOOMWW     "23WWbloom.bmp"
 
 int main() {
 
@@ -63,6 +63,7 @@ int main() {
     printf("Somando imagens...");
     soma(imagem, mascara, 1, 0.5, imagem);
     salvaImagem(imagem, BLOOMGT2);
+    salvaImagem(imagem, "GT22.bmp");
     printf("\t\t\t[\x1b[32m OK \x1b[0m]\n");
 
     //Libera a memória previamente alocada.
@@ -105,6 +106,7 @@ int main() {
 
     //3 - Soma o resultado da máscara borrada com a imagem original, causando o efeito bloom.
     soma(imagem, mascara, 1, 0.5, imagem);
+    salvaImagem(imagem, "Wind Waker GC2.bmp");
     salvaImagem(imagem, BLOOMWW);
 
     //Libera a memória previamente alocada.
