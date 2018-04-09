@@ -13,13 +13,70 @@
 #define BLOOMWW     "23WWbloom.bmp"
 
 int main() {
-
+    //Variáveis necessárias.
     Imagem *imagem, *mascara, *buffer;
+    //Desativa o buffer para forçar o printf.
+    setbuf(stdout, NULL);
 
     //Inicialzia imagens necessárias.
     imagem = abreImagem(GT2, 3);
 
     printf("Carregando imagem [ %s ]...", GT2);
+    if(!imagem) {
+        printf("\n\x1b[31mERRO:\x1b[0m A imagem não pode ser aberta.\n");
+        exit(1);
+    }
+    printf("\t\t[\x1b[32m OK \x1b[0m]\n");
+
+    mascara = criaImagem(imagem->largura, imagem->altura, imagem->n_canais);
+
+    if(!mascara) {
+        printf("\n\x1b[31mERRO:\x1b[0m A imagem não pode ser aberta.\n");
+        exit(1);
+    }
+
+    buffer = criaImagem(imagem->largura, imagem->altura, imagem->n_canais);
+
+    if(!buffer) {
+        printf("\n\x1b[31mERRO:\x1b[0m A imagem não pode ser aberta.\n");
+        exit(1);
+    }
+
+    //1 - Cria a máscara, separando as regiões mais claras da imagem.
+    printf("Criando máscara...");
+    binariza(imagem, mascara, 0.75f);
+    salvaImagem(mascara, MASCARAGT2);
+    printf("\t\t\t\t[\x1b[32m OK \x1b[0m]\n");
+
+    //2 - Borra a máscara diversas vezes.
+    printf("Borrando máscara... ");
+    printf("1 ");
+    filtroGaussiano(mascara, buffer, 10, 10, NULL);
+    printf("2 ");
+    filtroGaussiano(buffer, buffer,  20, 20, NULL);
+    printf("3 ");
+    filtroGaussiano(buffer, buffer,  40, 40, NULL);
+    printf("4 ");
+    filtroGaussiano(buffer, mascara, 80, 80, NULL);        
+    salvaImagem(mascara, BORRADAGT2);
+    printf("\t\t\t[\x1b[32m OK \x1b[0m]\n");
+
+    //3 - Soma o resultado da máscara borrada com a imagem original, causando o efeito bloom.
+    printf("Somando imagens...");
+    soma(imagem, mascara, 1, 0.5, imagem);
+    salvaImagem(imagem, BLOOMGT2);
+    salvaImagem(imagem, "GT22.bmp");
+    printf("\t\t\t\t[\x1b[32m OK \x1b[0m]\n");
+
+    //Libera a memória previamente alocada.
+    free(imagem);
+    free(mascara);
+    free(buffer);
+
+    //Inicialzia imagens necessárias.
+    imagem = abreImagem(WW, 3);
+
+    printf("Carregando imagem [ %s ]...", WW);
     if(!imagem) {
         printf("\n\x1b[31mERRO:\x1b[0m A imagem não pode ser aberta.\n");
         exit(1);
@@ -43,71 +100,28 @@ int main() {
     //1 - Cria a máscara, separando as regiões mais claras da imagem.
     printf("Criando máscara...");
     binariza(imagem, mascara, 0.75f);
-    salvaImagem(mascara, MASCARAGT2);
-    printf("\t\t\t[\x1b[32m OK \x1b[0m]\n");
+    salvaImagem(mascara, MASCARAWW);
+    printf("\t\t\t\t[\x1b[32m OK \x1b[0m]\n");
 
     //2 - Borra a máscara diversas vezes.
     printf("Borrando máscara... ");
     printf("1 ");
-    filtroGaussiano(mascara, buffer, 10, 10, NULL);
+    blur(mascara, buffer, 31,  31, NULL);
     printf("2 ");
-    filtroGaussiano(buffer, buffer, 20, 20, NULL);
+    blur(buffer, buffer,  61,  61, NULL);
     printf("3 ");
-    filtroGaussiano(buffer, buffer, 40, 40, NULL);
+    blur(buffer, buffer,  121, 121, NULL);
     printf("4 ");
-    filtroGaussiano(buffer, mascara, 80, 80, NULL);        
-    salvaImagem(mascara, BORRADAGT2);
-    printf("\t\t[\x1b[32m OK \x1b[0m]\n");
+    blur(buffer, mascara, 241, 241, NULL);        
+    salvaImagem(mascara, BORRADAWW);
+    printf("\t\t\t[\x1b[32m OK \x1b[0m]\n");
 
     //3 - Soma o resultado da máscara borrada com a imagem original, causando o efeito bloom.
     printf("Somando imagens...");
     soma(imagem, mascara, 1, 0.5, imagem);
-    salvaImagem(imagem, BLOOMGT2);
-    salvaImagem(imagem, "GT22.bmp");
-    printf("\t\t\t[\x1b[32m OK \x1b[0m]\n");
-
-    //Libera a memória previamente alocada.
-    free(imagem);
-    free(mascara);
-    free(buffer);
-
-    //Inicialzia imagens necessárias.
-    imagem = abreImagem(WW, 3);
-
-    if(!imagem) {
-        printf("\n\x1b[31mERRO:\x1b[0m A imagem não pode ser aberta.\n");
-        exit(1);
-    }
-
-    mascara = criaImagem(imagem->largura, imagem->altura, imagem->n_canais);
-
-    if(!mascara) {
-        printf("\n\x1b[31mERRO:\x1b[0m A imagem não pode ser aberta.\n");
-        exit(1);
-    }
-
-    buffer = criaImagem(imagem->largura, imagem->altura, imagem->n_canais);
-
-    if(!buffer) {
-        printf("\n\x1b[31mERRO:\x1b[0m A imagem não pode ser aberta.\n");
-        exit(1);
-    }
-
-    //1 - Cria a máscara, separando as regiões mais claras da imagem.
-    binariza(imagem, mascara, 0.75f);
-    salvaImagem(mascara, MASCARAWW);
-
-    //2 - Borra a máscara diversas vezes.
-    filtroGaussiano(mascara, buffer, 10, 10, NULL);
-    filtroGaussiano(buffer, buffer, 20, 20, NULL);
-    filtroGaussiano(buffer, buffer, 40, 40, NULL);
-    filtroGaussiano(buffer, mascara, 80, 80, NULL);        
-    salvaImagem(mascara, BORRADAWW);
-
-    //3 - Soma o resultado da máscara borrada com a imagem original, causando o efeito bloom.
-    soma(imagem, mascara, 1, 0.5, imagem);
     salvaImagem(imagem, "Wind Waker GC2.bmp");
     salvaImagem(imagem, BLOOMWW);
+    printf("\t\t\t\t[\x1b[32m OK \x1b[0m]\n");
 
     //Libera a memória previamente alocada.
     free(imagem);
