@@ -68,9 +68,9 @@ int main() {
     printf("\t\t\t\t[\x1b[32m OK \x1b[0m]\n");
 
     //Libera a memória previamente alocada.
-    free(imagem);
-    free(mascara);
-    free(buffer);
+    destroiImagem(imagem);
+    destroiImagem(mascara);
+    destroiImagem(buffer);
 
     //Inicialzia imagens necessárias.
     imagem = abreImagem(WW, 3);
@@ -113,9 +113,9 @@ int main() {
     printf("\t\t\t\t[\x1b[32m OK \x1b[0m]\n");
 
     //Libera a memória previamente alocada.
-    free(imagem);
-    free(mascara);
-    free(buffer);
+    destroiImagem(imagem);
+    destroiImagem(mascara);
+    destroiImagem(buffer);
 
     return 0;
 }
@@ -141,7 +141,7 @@ void mask(Imagem *in, Imagem *out, float threshold) {
         }
     }
 
-    free(temp);
+    destroiImagem(temp);
 
     printf("\t\t\t\t[\x1b[32m OK \x1b[0m]\n");
 }
@@ -162,7 +162,7 @@ void boxbloom(Imagem *mascara, int altura, int largura, int vezes) {
         soma(mascara, temp, 1, 1, mascara);
     }
 
-    free(temp);
+    destroiImagem(temp);
 
     printf("\t\t\t[\x1b[32m OK \x1b[0m]\n");
 }
@@ -183,7 +183,7 @@ void gaussianbloom(Imagem *mascara, int sigma, int vezes) {
         soma(mascara, temp, 1, 1, mascara);
     }
 
-    free(temp);
+    destroiImagem(temp);
 
     printf("\t\t\t[\x1b[32m OK \x1b[0m]\n");
 }
