@@ -16,7 +16,7 @@
 #define BORRADAWW   "22WWborrada.bmp"
 #define BLOOMWW     "23WWbloom.bmp"
 
-//Funções novas
+//Funções novas.
 void mask(Imagem *in, Imagem *out, float threshold);
 void boxbloom(Imagem *mascara, int altura, int largura, int vezes);
 void gaussianbloom(Imagem *mascara, int sigma, int vezes);
